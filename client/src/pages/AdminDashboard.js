@@ -670,29 +670,30 @@ const AdminDashboard = () => {
           </div>
         )}
 
-      {/* Date Filter Controls - ONLY FOR ADMIN */}
+      {/* Compact Filter Controls - ONLY FOR ADMIN */}
       {showLeadsSection && (
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex flex-wrap items-center gap-4">
+        <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200 space-y-3">
+          {/* Date Filter Row */}
+          <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Filter by Date:</span>
+              <Calendar className="h-4 w-4 text-gray-500" />
+              <span className="text-sm font-medium text-gray-700">Date:</span>
             </div>
             
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1">
               <button
                 onClick={() => handleDateFilterChange('all')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                className={`px-2 py-1 text-xs rounded transition-colors ${
                   dateFilter.filterType === 'all' 
                     ? 'bg-primary-600 text-white' 
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                All Time
+                All
               </button>
               <button
                 onClick={() => handleDateFilterChange('today')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                className={`px-2 py-1 text-xs rounded transition-colors ${
                   dateFilter.filterType === 'today' 
                     ? 'bg-primary-600 text-white' 
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -702,177 +703,193 @@ const AdminDashboard = () => {
               </button>
               <button
                 onClick={() => handleDateFilterChange('week')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                className={`px-2 py-1 text-xs rounded transition-colors ${
                   dateFilter.filterType === 'week' 
                     ? 'bg-primary-600 text-white' 
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                Last 7 Days
+                7 Days
               </button>
               <button
                 onClick={() => handleDateFilterChange('month')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                className={`px-2 py-1 text-xs rounded transition-colors ${
                   dateFilter.filterType === 'month' 
                     ? 'bg-primary-600 text-white' 
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
-                Last 30 Days
+                30 Days
               </button>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Custom Range:</span>
+            <div className="flex items-center gap-2 ml-4">
+              <span className="text-xs text-gray-600">Custom:</span>
               <input
                 type="date"
                 value={dateFilter.startDate}
                 onChange={(e) => handleDateFilterChange('custom', e.target.value, dateFilter.endDate)}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent"
               />
-              <span className="text-sm text-gray-500">to</span>
+              <span className="text-xs text-gray-500">to</span>
               <input
                 type="date"
                 value={dateFilter.endDate}
                 onChange={(e) => handleDateFilterChange('custom', dateFilter.startDate, e.target.value)}
-                className="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
           </div>
           
-          {/* Qualification Filter */}
-          <div className="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t border-gray-200">
+          {/* Other Filters Row */}
+          <div className="flex flex-wrap items-center gap-6">
+            {/* Qualification Filter */}
             <div className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Filter by Qualification:</span>
-            </div>
-            
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setQualificationFilter('all')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  qualificationFilter === 'all' 
-                    ? 'bg-primary-600 text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                All
-              </button>
-              <button
-                onClick={() => setQualificationFilter('qualified')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  qualificationFilter === 'qualified' 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Qualified
-              </button>
-              <button
-                onClick={() => setQualificationFilter('unqualified')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  qualificationFilter === 'unqualified' 
-                    ? 'bg-red-600 text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Unqualified
-              </button>
-              <button
-                onClick={() => setQualificationFilter('pending')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  qualificationFilter === 'pending' 
-                    ? 'bg-yellow-600 text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Pending
-              </button>
-            </div>
-          </div>
-          
-          {/* Duplicate Status Filter */}
-          <div className="mb-6">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Filter by Duplicate Status:</h4>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setDuplicateFilter('all')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  duplicateFilter === 'all' 
-                    ? 'bg-primary-600 text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                All Leads
-              </button>
-              <button
-                onClick={() => setDuplicateFilter('duplicates')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  duplicateFilter === 'duplicates' 
-                    ? 'bg-yellow-600 text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Duplicates Only
-              </button>
-              <button
-                onClick={() => setDuplicateFilter('non-duplicates')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  duplicateFilter === 'non-duplicates' 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Original Only
-              </button>
-            </div>
-          </div>
-          
-          {/* Organization Filter */}
-          <div className="mb-6">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Filter by Organization:</h4>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setOrganizationFilter('all')}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  organizationFilter === 'all' 
-                    ? 'bg-primary-600 text-white' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                All Organizations
-              </button>
-              {organizations.map((org) => (
+              <Target className="h-4 w-4 text-gray-500" />
+              <span className="text-sm font-medium text-gray-700">Qualification:</span>
+              <div className="flex gap-1">
                 <button
-                  key={org._id}
-                  onClick={() => setOrganizationFilter(org._id)}
-                  className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                    organizationFilter === org._id 
-                      ? 'bg-blue-600 text-white' 
+                  onClick={() => setQualificationFilter('all')}
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
+                    qualificationFilter === 'all' 
+                      ? 'bg-primary-600 text-white' 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  {org.name}
+                  All
                 </button>
-              ))}
+                <button
+                  onClick={() => setQualificationFilter('qualified')}
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
+                    qualificationFilter === 'qualified' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Qualified
+                </button>
+                <button
+                  onClick={() => setQualificationFilter('unqualified')}
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
+                    qualificationFilter === 'unqualified' 
+                      ? 'bg-red-600 text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Unqualified
+                </button>
+                <button
+                  onClick={() => setQualificationFilter('pending')}
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
+                    qualificationFilter === 'pending' 
+                      ? 'bg-yellow-600 text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Pending
+                </button>
+              </div>
+            </div>
+            
+            {/* Duplicate Status Filter */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-700">Duplicates:</span>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setDuplicateFilter('all')}
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
+                    duplicateFilter === 'all' 
+                      ? 'bg-primary-600 text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => setDuplicateFilter('duplicates')}
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
+                    duplicateFilter === 'duplicates' 
+                      ? 'bg-yellow-600 text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Dups Only
+                </button>
+                <button
+                  onClick={() => setDuplicateFilter('non-duplicates')}
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
+                    duplicateFilter === 'non-duplicates' 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  Original Only
+                </button>
+              </div>
+            </div>
+            
+            {/* Organization Filter */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-700">Org:</span>
+              <div className="flex gap-1 max-w-md overflow-x-auto">
+                <button
+                  onClick={() => setOrganizationFilter('all')}
+                  className={`px-2 py-1 text-xs rounded whitespace-nowrap transition-colors ${
+                    organizationFilter === 'all' 
+                      ? 'bg-primary-600 text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  All
+                </button>
+                {organizations.slice(0, 3).map((org) => (
+                  <button
+                    key={org._id}
+                    onClick={() => setOrganizationFilter(org._id)}
+                    className={`px-2 py-1 text-xs rounded whitespace-nowrap transition-colors ${
+                      organizationFilter === org._id 
+                        ? 'bg-blue-600 text-white' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                    title={org.name}
+                  >
+                    {org.name.length > 12 ? org.name.substring(0, 12) + '...' : org.name}
+                  </button>
+                ))}
+                {organizations.length > 3 && (
+                  <select
+                    value={organizationFilter}
+                    onChange={(e) => setOrganizationFilter(e.target.value)}
+                    className="px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500"
+                  >
+                    <option value="all">All Orgs</option>
+                    {organizations.map((org) => (
+                      <option key={org._id} value={org._id}>
+                        {org.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
             </div>
           </div>
           
-          <div className="mt-4 text-sm text-gray-600">
+          {/* Filter Summary */}
+          <div className="text-xs text-gray-600 border-t border-gray-100 pt-2">
             Showing {filteredLeads.length} of {leads.length} leads
             {qualificationFilter !== 'all' && (
               <span className="ml-2 text-primary-600 font-medium">
-                (Filtered by: {qualificationFilter.charAt(0).toUpperCase() + qualificationFilter.slice(1)})
+                • {qualificationFilter.charAt(0).toUpperCase() + qualificationFilter.slice(1)}
               </span>
             )}
             {duplicateFilter !== 'all' && (
               <span className="ml-2 text-yellow-600 font-medium">
-                (Duplicate Filter: {duplicateFilter === 'duplicates' ? 'Duplicates Only' : 'Original Only'})
+                • {duplicateFilter === 'duplicates' ? 'Duplicates Only' : 'Original Only'}
               </span>
             )}
             {organizationFilter !== 'all' && (
               <span className="ml-2 text-blue-600 font-medium">
-                (Organization: {organizations.find(org => org._id === organizationFilter)?.name || 'Unknown'})
+                • {organizations.find(org => org._id === organizationFilter)?.name || 'Unknown'}
               </span>
             )}
           </div>
@@ -888,145 +905,152 @@ const AdminDashboard = () => {
               <p className="text-sm text-gray-600">Comprehensive view of all leads from Agent1 and Agent2</p>
             </div>
             
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Lead Info
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Contact
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Organization
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Category
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Qualification
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Duplicate Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Agent2 Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Management
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredLeads.map((lead) => (
-                    <tr key={lead.leadId || lead._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{lead.name}</div>
-                          <div className="text-sm text-gray-500">{lead.company}</div>
-                          {lead.leadId && (
-                            <div className="text-xs text-primary-600 font-mono">ID: {lead.leadId}</div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div className="text-sm text-gray-900">{maskEmail(lead.email)}</div>
-                          <div className="text-sm text-gray-500">{maskPhone(lead.phone)}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {lead.organization?.name || 'Unknown'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {getCategoryBadge(lead.category, lead.completionPercentage)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {getQualificationBadge(lead.qualificationStatus)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {lead.isDuplicate ? (
-                          <div className="text-sm">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-                              ⚠️ Duplicate
-                            </span>
-                            <div className="text-xs text-gray-500 mt-1">
-                              Phone Match
+            {/* Compact Card-Based Layout */}
+            <div className="p-4 space-y-3 max-h-96 overflow-y-auto">
+              {filteredLeads.map((lead) => (
+                <div key={lead.leadId || lead._id} className="bg-gray-50 rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                  <div className="p-3">
+                    <div className="grid grid-cols-12 gap-3 items-center">
+                      {/* Lead Basic Info - 3 columns */}
+                      <div className="col-span-3">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex-shrink-0">
+                            <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                              <span className="text-white font-semibold text-xs">
+                                {lead.name ? lead.name.charAt(0).toUpperCase() : 'L'}
+                              </span>
                             </div>
-                            {lead.duplicateOf && (
-                              <div className="text-xs text-gray-400">
-                                Original: {lead.duplicateOf.leadId}
-                              </div>
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-semibold text-gray-900 truncate">{lead.name}</p>
+                            {lead.leadId && (
+                              <span className="text-xs text-primary-600 font-mono bg-primary-50 px-1 py-0.5 rounded">
+                                {lead.leadId}
+                              </span>
                             )}
                           </div>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                            ✓ Original
+                        </div>
+                      </div>
+
+                      {/* Contact Info - 2 columns */}
+                      <div className="col-span-2">
+                        <div className="text-xs space-y-0.5">
+                          <div className="text-gray-600 truncate">{maskEmail(lead.email)}</div>
+                          <div className="text-gray-500">{maskPhone(lead.phone)}</div>
+                        </div>
+                      </div>
+
+                      {/* Organization - 1.5 columns */}
+                      <div className="col-span-1">
+                        <div className="text-xs">
+                          <span className="text-gray-900 font-medium truncate block" title={lead.organization?.name || 'Unknown'}>
+                            {lead.organization?.name ? 
+                              (lead.organization.name.length > 12 ? lead.organization.name.substring(0, 12) + '...' : lead.organization.name) 
+                              : 'Unknown'}
                           </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
+                        </div>
+                      </div>
+
+                      {/* Category - 1 column */}
+                      <div className="col-span-1">
+                        <div className="flex flex-col items-start">
+                          {getCategoryBadge(lead.category, lead.completionPercentage)}
+                        </div>
+                      </div>
+
+                      {/* Status Indicators - 2 columns */}
+                      <div className="col-span-2">
+                        <div className="flex flex-col space-y-1">
+                          <div className="flex items-center">
+                            {getQualificationBadge(lead.qualificationStatus)}
+                          </div>
+                          <div className="flex items-center">
+                            {lead.isDuplicate ? (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                ⚠️ Dup
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                ✓ Orig
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Agent Status - 1.5 columns */}
+                      <div className="col-span-2">
+                        <div className="text-xs">
                           {lead.leadProgressStatus ? (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
-                              {lead.leadProgressStatus}
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800 truncate max-w-full" title={lead.leadProgressStatus}>
+                              {lead.leadProgressStatus.length > 15 ? lead.leadProgressStatus.substring(0, 15) + '...' : lead.leadProgressStatus}
                             </span>
                           ) : (
-                            <span className="text-xs text-gray-400 italic">No status update</span>
+                            <span className="text-gray-400 italic">No status</span>
                           )}
                           {lead.lastUpdatedBy && (
-                            <div className="text-xs text-gray-500 mt-1">
+                            <div className="text-xs text-gray-500 mt-0.5">
                               by {lead.lastUpdatedBy}
                             </div>
                           )}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div className="text-sm text-gray-900">
-                            Created by: {lead.createdBy?.name}
+                      </div>
+
+                      {/* Actions - 1 column */}
+                      <div className="col-span-1">
+                        <button
+                          onClick={() => openViewModal(lead)}
+                          className="w-full text-primary-600 hover:text-primary-900 bg-primary-50 hover:bg-primary-100 px-2 py-1 rounded text-xs transition-colors duration-200 flex items-center justify-center gap-1"
+                        >
+                          {isReddingtonAdmin() ? (
+                            <>
+                              <Edit3 className="h-3 w-3" />
+                              Edit
+                            </>
+                          ) : (
+                            'View'
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Additional Info Row - Collapsible */}
+                    <div className="mt-2 pt-2 border-t border-gray-200">
+                      <div className="grid grid-cols-12 gap-3 text-xs text-gray-500">
+                        <div className="col-span-4">
+                          <span>Created: {lead.createdBy?.name || 'Unknown'}</span>
+                        </div>
+                        {lead.lastUpdatedBy && (
+                          <div className="col-span-4">
+                            <span className="text-green-600">Updated: {lead.lastUpdatedBy}</span>
                           </div>
-                          {lead.lastUpdatedBy && (
-                            <div className="text-sm text-green-600">
-                              Updated by: {lead.lastUpdatedBy}
-                            </div>
+                        )}
+                        <div className="col-span-4 text-right">
+                          {lead.lastUpdatedAt && (
+                            <span>
+                              {new Date(lead.lastUpdatedAt).toLocaleDateString()}
+                            </span>
                           )}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => openViewModal(lead)}
-                            className="text-primary-600 hover:text-primary-900 bg-primary-50 hover:bg-primary-100 px-3 py-1 rounded-md transition-colors duration-200 flex items-center gap-1"
-                          >
-                            {isReddingtonAdmin() ? (
-                              <>
-                                <Edit3 className="h-4 w-4" />
-                                Edit Lead
-                              </>
-                            ) : (
-                              'View Details'
-                            )}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {filteredLeads.length === 0 && (
-                    <tr>
-                      <td colSpan="7" className="px-6 py-8 text-center text-gray-500">
-                        No leads found matching your criteria.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {filteredLeads.length === 0 && (
+                <div className="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center">
+                  <div className="text-gray-500">
+                    <div className="mx-auto h-12 w-12 text-gray-400 mb-4">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-lg font-medium text-gray-900 mb-2">No leads found</p>
+                    <p className="text-gray-500">No leads match your current filter criteria.</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

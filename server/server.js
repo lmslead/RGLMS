@@ -157,10 +157,32 @@ io.on('connection', (socket) => {
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI);
+    
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    
+    // Connection event listeners
+    mongoose.connection.on('connected', () => {
+      console.log('Mongoose connected to MongoDB');
+    });
+    
+    mongoose.connection.on('error', (err) => {
+      console.error('Mongoose connection error:', err);
+    });
+    
+    mongoose.connection.on('disconnected', () => {
+      console.log('Mongoose disconnected from MongoDB');
+    });
+    
   } catch (error) {
     console.error('Database connection failed:', error.message);
-    process.exit(1);
+    console.error('Full error:', error);
+    // Don't exit immediately in development, retry connection
+    if (process.env.NODE_ENV === 'production') {
+      process.exit(1);
+    } else {
+      console.log('Retrying connection in 5 seconds...');
+      setTimeout(connectDB, 5000);
+    }
   }
 };
 
@@ -181,10 +203,38 @@ connectDB().then(() => {
   process.exit(1);
 });
 
+// Error handling for uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  console.error('Stack:', error.stack);
+  // Don't exit in development, just log the error
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  }
+});
+
+// Error handling for unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Don't exit in development, just log the error
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  }
+});
+
 // Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received');
   server.close(() => {
+    mongoose.connection.close();
+    console.log('Process terminated');
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received');
+  server.close(() => {
+    mongoose.connection.close();
     console.log('Process terminated');
   });
 });
