@@ -2,24 +2,41 @@
 
 A full-stack web application for managing leads with role-based access control and real-time updates.
 
+## 🌐 Production Deployment
+
+**Live Application**: http://56.228.26.240  
+**Server**: Ubuntu EC2 (56.228.26.240)  
+**Database**: MongoDB Atlas (Cloud)
+
+### Quick Deploy
+```bash
+git clone https://github.com/lmslead/RGLMS.git
+cd RGLMS
+chmod +x deploy-production.sh
+./deploy-production.sh
+```
+
+📖 **Full Deployment Guide**: [PRODUCTION-DEPLOYMENT.md](PRODUCTION-DEPLOYMENT.md)
+
 ## Features
 
-- **Role-based Authentication**: Agent 1 (Lead Generator), Agent 2 (Lead Follower), Admin
+- **Role-based Authentication**: Agent 1 (Lead Generator), Agent 2 (Lead Follower), Admin, SuperAdmin
 - **Real-time Updates**: Using Socket.IO for live data synchronization  
 - **AI Lead Categorization**: Automatic classification as Hot, Warm, or Cold based on data completeness
 - **Dashboard Analytics**: Real-time metrics and conversion tracking
 - **Mobile Responsive**: Clean UI with Tailwind CSS
-- **Security**: JWT authentication, bcrypt hashing, input validation, rate limiting
+- **Security**: JWT authentication, bcrypt hashing, input validation, rate limiting, CORS protection
 
 ## Tech Stack
 
 ### Backend
 - Node.js with Express.js
-- MongoDB Atlas
+- MongoDB Atlas (Cloud Database)
 - Socket.IO for real-time communication
 - JWT for authentication
 - bcrypt for password hashing
 - Helmet, CORS, express-rate-limit for security
+- PM2 for process management
 
 ### Frontend
 - React.js with hooks
@@ -27,6 +44,12 @@ A full-stack web application for managing leads with role-based access control a
 - Axios for API calls
 - Socket.IO client for real-time updates
 - React Router for navigation
+- Nginx for reverse proxy and static file serving
+
+## Production URLs
+- **Frontend**: http://56.228.26.240
+- **API**: http://56.228.26.240:5000
+- **Health Check**: http://56.228.26.240:5000/api/auth/health
 
 ## Setup Instructions
 

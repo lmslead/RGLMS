@@ -8,11 +8,14 @@
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
     "build": "cd client && npm run build",
+    "build:prod": "cd client && npm run build:prod",
     "install-server": "cd server && npm install",
     "install-client": "cd client && npm install",
     "install-all": "npm run install-server && npm run install-client",
-    "seed": "cd server && npm run seed",
-    "start": "cd server && npm start"
+    "start": "cd server && npm start",
+    "start:prod": "cd server && npm run start:prod",
+    "deploy": "chmod +x deploy-production.sh && ./deploy-production.sh",
+    "health": "chmod +x health-check.sh && ./health-check.sh"
   },
   "keywords": [
     "lead-management",

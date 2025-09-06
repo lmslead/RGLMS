@@ -26,11 +26,11 @@ const dev = process.env.NODE_ENV !== 'production';
 const io = socketIo(server, {
   cors: {
     origin: dev ? true : [
-      `http://16.171.146.116`,
-      `http://16.171.146.116:3000`,
-      `http://16.171.146.116:5000`,
-      `http://16.171.146.116:80`,
-      `http://16.171.146.116:443`
+      `http://56.228.26.240`,
+      `http://56.228.26.240:3000`,
+      `http://56.228.26.240:5000`,
+      `http://56.228.26.240:80`,
+      `http://56.228.26.240:443`
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"]
@@ -55,11 +55,11 @@ app.use(helmet({
 }));
 app.use(cors({
   origin: dev ? ['http://localhost:3000', 'http://127.0.0.1:3000'] : [
-    `http://16.171.146.116`,
-    `http://16.171.146.116:3000`,
-    `http://16.171.146.116:5000`,
-    `http://16.171.146.116:80`,
-    `http://16.171.146.116:443`
+    `http://56.228.26.240`,
+    `http://56.228.26.240:3000`,
+    `http://56.228.26.240:5000`,
+    `http://56.228.26.240:80`,
+    `http://56.228.26.240:443`
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
