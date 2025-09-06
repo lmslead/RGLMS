@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, UserPlus, ToggleLeft, ToggleRight, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Users, UserPlus, ToggleLeft, ToggleRight, Eye, EyeOff, Trash2, Edit3, Save, X } from 'lucide-react';
 import axios from '../utils/axios';
 import toast from 'react-hot-toast';
 import LoadingSpinner from './LoadingSpinner';
@@ -13,9 +13,14 @@ const AgentManagement = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Edit agent states
+  const [editingAgent, setEditingAgent] = useState(null);
+  const [editFormData, setEditFormData] = useState({ name: '', email: '' });
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  // Check if user can create agents (only REDDINGTON GLOBAL CONSULTANCY admins)
-  const canCreateAgents = user?.organization?.name === 'REDDINGTON GLOBAL CONSULTANCY';
+  // Check if user can create agents (only REDDINGTON GLOBAL CONSULTANCY admins or superadmins)
+  const canCreateAgents = user?.role === 'superadmin' || user?.organization?.name === 'REDDINGTON GLOBAL CONSULTANCY';
 
   useEffect(() => {
     fetchAgents();
@@ -59,6 +64,52 @@ const AgentManagement = () => {
       const message = error.response?.data?.message || 'Error updating agent status';
       toast.error(message);
       console.error('Toggle agent status error:', error);
+    }
+  };
+
+  // Edit agent functions
+  const startEditAgent = (agent) => {
+    setEditingAgent(agent._id);
+    setEditFormData({
+      name: agent.name,
+      email: agent.email
+    });
+  };
+
+  const cancelEditAgent = () => {
+    setEditingAgent(null);
+    setEditFormData({ name: '', email: '' });
+  };
+
+  const saveAgentChanges = async (agentId) => {
+    if (!editFormData.name.trim() || !editFormData.email.trim()) {
+      toast.error('Name and email are required');
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      await axios.put(`/api/auth/agents/${agentId}`, {
+        name: editFormData.name.trim(),
+        email: editFormData.email.trim()
+      });
+
+      // Update local state
+      setAgents(prev => prev.map(agent =>
+        agent._id === agentId
+          ? { ...agent, name: editFormData.name.trim(), email: editFormData.email.trim() }
+          : agent
+      ));
+
+      setEditingAgent(null);
+      setEditFormData({ name: '', email: '' });
+      toast.success('Agent information updated successfully');
+    } catch (error) {
+      const message = error.response?.data?.message || 'Error updating agent information';
+      toast.error(message);
+      console.error('Update agent error:', error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -277,10 +328,29 @@ const AgentManagement = () => {
                       />
                     </td>
                     <td className="py-4 px-4">
-                      <div>
-                        <div className="font-medium text-gray-900">{agent.name}</div>
-                        <div className="text-sm text-gray-600">{agent.email}</div>
-                      </div>
+                      {editingAgent === agent._id ? (
+                        <div className="space-y-2">
+                          <input
+                            type="text"
+                            value={editFormData.name}
+                            onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Agent name"
+                          />
+                          <input
+                            type="email"
+                            value={editFormData.email}
+                            onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                            className="w-full px-2 py-1 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Agent email"
+                          />
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="font-medium text-gray-900">{agent.name}</div>
+                          <div className="text-sm text-gray-600">{agent.email}</div>
+                        </div>
+                      )}
                     </td>
                     <td className="py-4 px-4">
                       <div>
@@ -318,28 +388,58 @@ const AgentManagement = () => {
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => toggleAgentStatus(agent._id, agent.isActive)}
-                          className={`p-2 rounded-lg transition-colors ${
-                            agent.isActive
-                              ? 'text-red-600 hover:bg-red-50'
-                              : 'text-green-600 hover:bg-green-50'
-                          }`}
-                          title={agent.isActive ? 'Deactivate Agent' : 'Activate Agent'}
-                        >
-                          {agent.isActive ? (
-                            <ToggleRight size={20} />
-                          ) : (
-                            <ToggleLeft size={20} />
-                          )}
-                        </button>
-                        <button
-                          onClick={() => deleteAgent(agent._id, agent.name)}
-                          className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
-                          title="Delete Agent"
-                        >
-                          <Trash2 size={20} />
-                        </button>
+                        {editingAgent === agent._id ? (
+                          <>
+                            <button
+                              onClick={() => saveAgentChanges(agent._id)}
+                              disabled={isUpdating}
+                              className="p-2 rounded-lg text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50"
+                              title="Save Changes"
+                            >
+                              <Save size={20} />
+                            </button>
+                            <button
+                              onClick={cancelEditAgent}
+                              disabled={isUpdating}
+                              className="p-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                              title="Cancel Edit"
+                            >
+                              <X size={20} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => startEditAgent(agent)}
+                              className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                              title="Edit Agent"
+                            >
+                              <Edit3 size={20} />
+                            </button>
+                            <button
+                              onClick={() => toggleAgentStatus(agent._id, agent.isActive)}
+                              className={`p-2 rounded-lg transition-colors ${
+                                agent.isActive
+                                  ? 'text-red-600 hover:bg-red-50'
+                                  : 'text-green-600 hover:bg-green-50'
+                              }`}
+                              title={agent.isActive ? 'Deactivate Agent' : 'Activate Agent'}
+                            >
+                              {agent.isActive ? (
+                                <ToggleRight size={20} />
+                              ) : (
+                                <ToggleLeft size={20} />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => deleteAgent(agent._id, agent.name)}
+                              className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                              title="Delete Agent"
+                            >
+                              <Trash2 size={20} />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

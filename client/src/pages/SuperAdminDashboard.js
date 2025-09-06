@@ -19,6 +19,7 @@ import axios from '../utils/axios';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
 import OrganizationManagement from './OrganizationManagement';
+import SuperAdminUserManagement from '../components/SuperAdminUserManagement';
 import { formatEasternTimeForDisplay, formatEasternTime, getEasternNow } from '../utils/dateUtils';
 
 const SuperAdminDashboard = () => {
@@ -510,6 +511,17 @@ const SuperAdminDashboard = () => {
             <Building2 className="h-4 w-4 inline mr-2" />
             Organizations
           </button>
+          <button
+            onClick={() => setActiveTab('user-management')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'user-management'
+                ? 'border-purple-500 text-purple-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Users className="h-4 w-4 inline mr-2" />
+            User Management
+          </button>
         </nav>
       </div>
 
@@ -819,6 +831,11 @@ const SuperAdminDashboard = () => {
       {/* Organizations Tab */}
       {activeTab === 'organizations' && (
         <OrganizationManagement />
+      )}
+
+      {/* User Management Tab */}
+      {activeTab === 'user-management' && (
+        <SuperAdminUserManagement />
       )}
 
       {/* Lead Tracking Tab Content */}

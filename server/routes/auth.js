@@ -514,6 +514,174 @@ router.put('/agents/:id/status', protect, async (req, res) => {
   }
 });
 
+// @desc    Update agent information (Admin only)
+// @route   PUT /api/auth/agents/:id
+// @access  Private (Admin only)
+router.put('/agents/:id', protect, [
+  body('name')
+    .trim()
+    .isLength({ min: 2, max: 50 })
+    .withMessage('Name must be between 2 and 50 characters'),
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please enter a valid email')
+], handleValidationErrors, async (req, res) => {
+  try {
+    // Check if user is admin or superadmin
+    if (!['admin', 'superadmin'].includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Only admin or superadmin can update agent information'
+      });
+    }
+
+    const { name, email } = req.body;
+    const agent = await User.findById(req.params.id);
+
+    if (!agent || !['agent1', 'agent2'].includes(agent.role)) {
+      return res.status(404).json({
+        success: false,
+        message: 'Agent not found'
+      });
+    }
+
+    // Check if email is already taken by another user
+    if (email !== agent.email) {
+      const existingUser = await User.findOne({ 
+        email: email,
+        _id: { $ne: req.params.id }
+      });
+      
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email is already in use by another user'
+        });
+      }
+    }
+
+    // Update agent information
+    agent.name = name;
+    agent.email = email;
+    await agent.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Agent information updated successfully',
+      data: {
+        agent: agent.toJSON()
+      }
+    });
+
+  } catch (error) {
+    console.error('Update agent error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating agent information',
+      error: process.env.NODE_ENV === 'development' ? error.message : {}
+    });
+  }
+});
+
+// @desc    Update user information (SuperAdmin only - supports all user types including password)
+// @route   PUT /api/auth/users/:id
+// @access  Private (SuperAdmin only)
+router.put('/users/:id', protect, [
+  body('name')
+    .trim()
+    .isLength({ min: 2, max: 50 })
+    .withMessage('Name must be between 2 and 50 characters'),
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please enter a valid email'),
+  body('password')
+    .optional()
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain at least one lowercase letter, one uppercase letter, and one number')
+], handleValidationErrors, async (req, res) => {
+  try {
+    // Check if user is superadmin
+    if (req.user.role !== 'superadmin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only superadmin can update user information'
+      });
+    }
+
+    const { name, email, password } = req.body;
+    const targetUser = await User.findById(req.params.id);
+
+    if (!targetUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // SuperAdmin can update agent1, agent2, and admin users
+    if (!['agent1', 'agent2', 'admin'].includes(targetUser.role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Can only update agent1, agent2, or admin users'
+      });
+    }
+
+    // Prevent superadmin from updating themselves through this route
+    if (targetUser._id.toString() === req.user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot update your own account through this route'
+      });
+    }
+
+    // Check if email is already taken by another user
+    if (email !== targetUser.email) {
+      const existingUser = await User.findOne({ 
+        email: email,
+        _id: { $ne: req.params.id }
+      });
+      
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email is already in use by another user'
+        });
+      }
+    }
+
+    // Update user information
+    targetUser.name = name;
+    targetUser.email = email;
+
+    // Update password if provided
+    if (password && password.trim() !== '') {
+      targetUser.password = password; // Will be hashed by the pre-save middleware
+    }
+
+    await targetUser.save();
+
+    res.status(200).json({
+      success: true,
+      message: `${targetUser.role} information updated successfully${password ? ' (including password)' : ''}`,
+      data: {
+        user: targetUser.toJSON()
+      }
+    });
+
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating user information',
+      error: process.env.NODE_ENV === 'development' ? error.message : {}
+    });
+  }
+});
+
 // @desc    Delete agent (Admin only)
 // @route   DELETE /api/auth/agents/:id
 // @access  Private (Admin only)
